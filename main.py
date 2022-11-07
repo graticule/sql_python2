@@ -146,3 +146,5 @@ if __name__ == '__main__':
         print(*set([record[0] for record in q]), sep=',\n')
     else:
         print('not found')
+        
+    session.close()
