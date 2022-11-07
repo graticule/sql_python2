@@ -1,9 +1,8 @@
-from pprint import pprint
+import json
 
 import dotenv
 import sqlalchemy as sq
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-import json
 
 Base = declarative_base()
 
@@ -31,7 +30,6 @@ class Book(Base):
         return f'Book #{self.id}: {self.title} by Publisher #{self.id_publisher}'
 
 
-
 class Shop(Base):
     __tablename__ = 'shop'
 
@@ -40,7 +38,6 @@ class Shop(Base):
 
     def __repr__(self):
         return f'Shop #{self.id}: {self.name}'
-
 
 
 class Stock(Base):
@@ -56,7 +53,6 @@ class Stock(Base):
 
     def __repr__(self):
         return f'Stock #{self.id}: Book #{self.id_book} from Shop #{self.id_shop}'
-
 
 
 class Sale(Base):
@@ -131,20 +127,20 @@ if __name__ == '__main__':
 
     if query_publisher_id is None:
         print(f'Shops selling books published by {query_publisher}:')
-        q = session.query(Shop.name).join(Stock, Stock.id_shop==Shop.id)\
-                                    .join(Book, Book.id == Stock.id_book)\
-                                    .join(Publisher, Publisher.id == Book.id_publisher)\
-                                    .filter(Publisher.name == query_publisher)\
-                                    .all()
+        q = session.query(Shop.name).join(Stock, Stock.id_shop == Shop.id) \
+            .join(Book, Book.id == Stock.id_book) \
+            .join(Publisher, Publisher.id == Book.id_publisher) \
+            .filter(Publisher.name == query_publisher) \
+            .all()
     else:
         print(f'Shops selling books published by Publisher #{query_publisher_id}:')
         q = session.query(Shop.name).join(Stock, Stock.id_shop == Shop.id) \
-                                    .join(Book, Book.id == Stock.id_book)\
-                                    .filter(Book.id_publisher == query_publisher_id) \
-                                    .all()
+            .join(Book, Book.id == Stock.id_book) \
+            .filter(Book.id_publisher == query_publisher_id) \
+            .all()
     if q:
         print(*set([record[0] for record in q]), sep=',\n')
     else:
         print('not found')
-        
+
     session.close()
